@@ -19,24 +19,73 @@ enum userRole {
   ADMIN
 }
 
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
 model User {
-  id              String           @id @default(uuid())
-  name            String
-  email           String           @unique
-  password        String
-  role            userRole         @default(CUSTOMER)
+  id       String     @id @default(uuid())
+  name     String
+  email    String     @unique
+  password String
+  role     userRole   @default(CUSTOMER)
+  status   UserStatus @default(ACTIVE)
+
   providerProfile ProviderProfile?
+  orders          Orders[]
 }
 
 model ProviderProfile {
-  id             String  @id @default(uuid())
-  userId         String  @unique
+  id String @id @default(uuid())
+
   restaurantName String
   description    String?
   address        String
   phone          String
+  userId         String  @unique
+  user           User    @relation(fields: [userId], references: [id])
 
-  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  meals     Meal[]
+}
+
+model Categoriy {
+  id    String @id @default(uuid())
+  name  String @unique
+  meals Meal[]
+}
+
+model Meal {
+  id          String          @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  image       String?
+  isAvailable Boolean         @default(true)
+  providerId  String
+  provider    ProviderProfile @relation(fields: [providerId], references: [id])
+  categoryId  String
+  category    Categoriy       @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime        @default(now())
+}
+
+enum OrderStatus {
+  PLACED
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+model Orders {
+  id String @id @default(uuid())
+
+  totalAmount     Float
+  status          OrderStatus @default(PLACED)
+  deliveryAddress String
+  customerId      String
+  customer        User        @relation(fields: [customerId], references: [id])
 
   createdAt DateTime @default(now())
 }
