@@ -33,7 +33,10 @@ model User {
   status   UserStatus @default(ACTIVE)
 
   providerProfile ProviderProfile?
-  orders          Orders[]
+  orders          Order[]
+  reviews         Review[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model ProviderProfile {
@@ -68,6 +71,8 @@ model Meal {
   categoryId  String
   category    Categoriy       @relation(fields: [categoryId], references: [id])
   createdAt   DateTime        @default(now())
+  orderItems  OrderItem[]
+  reviews     Review[]
 }
 
 enum OrderStatus {
@@ -78,7 +83,7 @@ enum OrderStatus {
   CANCELLED
 }
 
-model Orders {
+model Order {
   id String @id @default(uuid())
 
   totalAmount     Float
@@ -86,6 +91,31 @@ model Orders {
   deliveryAddress String
   customerId      String
   customer        User        @relation(fields: [customerId], references: [id])
+
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id       String @id @default(uuid())
+  orderId  String
+  mealId   String
+  quantity Int
+
+  order Order @relation(fields: [orderId], references: [id])
+  meal  Meal  @relation(fields: [mealId], references: [id])
+}
+
+model Review {
+  id      String  @id @default(uuid())
+  rating  Int
+  comment String?
+
+  userId String
+  mealId String
+
+  user User @relation(fields: [userId], references: [id])
+  meal Meal @relation(fields: [mealId], references: [id])
 
   createdAt DateTime @default(now())
 }
