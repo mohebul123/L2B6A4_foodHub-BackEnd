@@ -2,18 +2,26 @@ import { JwtPayload } from "jsonwebtoken";
 import { Meal, ProviderProfile } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
-const createMeal = async (payload: Meal) => {
-  console.log(payload);
-  const isExist = await prisma.meal.findUnique({
+const createMeal = async (payload: Meal, userId: string) => {
+  const provider = await prisma.providerProfile.findUnique({
     where: {
-      id: payload.id,
+      userId,
     },
   });
-  if (isExist) {
-    throw new Error("Meal Already Exists in db");
+  if (!provider) {
+    throw new Error("ProviderProfile Not Found in  DB");
+  }
+  const isCategoryExist = await prisma.category.findUnique({
+    where: {
+      id: payload.categoryId,
+    },
+  });
+
+  if (!isCategoryExist) {
+    throw new Error("Category Not Found in  DB");
   }
   const result = await prisma.meal.create({
-    data: payload,
+    data: { ...payload, providerId: provider.id },
   });
   return result;
 };

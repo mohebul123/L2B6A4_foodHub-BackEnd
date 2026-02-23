@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { providerService } from "./provider.service";
 
 const createMeal = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
   try {
-    console.log(req.body);
-    const result = await providerService.createMeal(req.body);
+    const result = await providerService.createMeal(req.body, userId);
     res.status(201).json({
       success: true,
       message: "Meal created successfully",

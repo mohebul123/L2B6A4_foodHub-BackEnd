@@ -16,3 +16,20 @@ routes.use("/providers", providerRouter);
 // routes.use("/orders/", authRouter);
 
 export default routes;
+
+/*
+ ***********admin:
+    name:
+    email:
+    token:
+
+************* customer:
+     name:
+    email:
+    token:
+
+   **************** provider:
+    name:
+    email:
+    token:
+*/
