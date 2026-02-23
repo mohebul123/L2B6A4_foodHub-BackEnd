@@ -11,7 +11,6 @@ interface userInfo {
 }
 const register = async (payload: userInfo) => {
   const hashedPassword = await bcrypt.hash(payload.password, 10);
-  console.log("Hashed: ", hashedPassword);
   const existingUser = await prisma.user.findUnique({
     where: {
       email: payload.email,

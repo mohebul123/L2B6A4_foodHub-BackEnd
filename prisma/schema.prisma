@@ -53,7 +53,7 @@ model ProviderProfile {
   meals     Meal[]
 }
 
-model Categoriy {
+model Category {
   id    String @id @default(uuid())
   name  String @unique
   meals Meal[]
@@ -69,7 +69,7 @@ model Meal {
   providerId  String
   provider    ProviderProfile @relation(fields: [providerId], references: [id])
   categoryId  String
-  category    Categoriy       @relation(fields: [categoryId], references: [id])
+  category    Category        @relation(fields: [categoryId], references: [id])
   createdAt   DateTime        @default(now())
   orderItems  OrderItem[]
   reviews     Review[]

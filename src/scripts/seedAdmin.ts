@@ -1,10 +1,10 @@
 import { prisma } from "../lib/prisma";
 import { UserRole } from "../middleware/auth";
-
+import bcrypt from "bcrypt";
 async function seedAdmin() {
   try {
     const adminData = {
-      name: "amdinMoheb",
+      name: "adminMoheb",
       email: "adminmoheb@gmail.com",
       password: "admin1234",
       role: UserRole.admin,
@@ -18,8 +18,9 @@ async function seedAdmin() {
     if (isAdminExist) {
       throw new Error("User Already Exists");
     }
+    const hashedPassword = await bcrypt.hash(adminData.password, 10);
     const admin = await prisma.user.create({
-      data: adminData,
+      data: { ...adminData, password: hashedPassword },
     });
     console.log("Admin Created Successfully", admin);
   } catch (error) {
