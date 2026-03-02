@@ -18,6 +18,40 @@ const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getOrders = async (req: Request, res: Response) => {
+  try {
+    const customerId = req.user?.id;
+    const result = await orderService.getOrders(customerId);
+    res.status(201).json({
+      success: true,
+      message: "Orders Retrived Successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+const getOrderById = async (req: Request, res: Response) => {
+  try {
+    const orderId = req.user?.id;
+    const result = await orderService.getOrders(orderId);
+    res.status(201).json({
+      success: true,
+      message: "Order Retrived Successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 export const orderController = {
   createOrder,
+  getOrders,
+  getOrderById,
 };

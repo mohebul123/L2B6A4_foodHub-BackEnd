@@ -8,7 +8,7 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.get(
   "/me",
-  auth(UserRole.customer, UserRole.customer),
+  auth(UserRole.customer, UserRole.admin, UserRole.provider),
   authController.getCurrentUser,
 );
 export const authRouter = router;
