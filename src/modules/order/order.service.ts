@@ -1,0 +1,118 @@
+import { Order } from "../../generated/prisma/client";
+import { prisma } from "../../lib/prisma";
+
+type CreateOrderPayload = {
+  deliveryAddress: string;
+  orderItems: {
+    mealId: string;
+    quantity: number;
+  }[];
+};
+
+const createOrder = async (userId: string, payload: CreateOrderPayload) => {
+  const { deliveryAddress, orderItems } = payload;
+  if (!orderItems || orderItems.length === 0) {
+    throw new Error("Items Not Founds");
+  }
+  const mealIds = orderItems.map((m) => m.mealId);
+  const mealsDetailsFromDb = await prisma.meal.findMany({
+    where: {
+      id: { in: mealIds },
+    },
+  });
+  let totalPrice = 0;
+
+  const orderItemsData = orderItems.map((item) => {
+    const meal = mealsDetailsFromDb.find((m) => m.id === item.mealId);
+
+    if (!meal) {
+      throw new Error("Meal not found");
+    }
+
+    const itemTotal = meal.price * item.quantity;
+    totalPrice += itemTotal;
+
+    return {
+      mealId: meal.id,
+      quantity: item.quantity,
+    };
+  });
+
+  const order = await prisma.order.create({
+    data: {
+      customerId: userId,
+      deliveryAddress,
+      totalAmount: totalPrice,
+      orderItems: {
+        create: orderItemsData,
+      },
+    },
+    include: {
+      orderItems: true,
+    },
+  });
+  console.log("t", order);
+  return order;
+};
+
+export const orderService = {
+  createOrder,
+};
+
+/*
+import { prisma } from "../prisma";
+
+export const createOrder = async (req, res) => {
+  const userId = req.user.id; // auth middleware থেকে
+  const { deliveryAddress, paymentMethod, items } = req.body;
+
+  if (!items || items.length === 0) {
+    return res.status(400).json({ message: "No items provided" });
+  }
+
+  // 1️⃣ সব meal fetch করি
+  const mealIds = items.map(item => item.mealId);
+
+  const meals = await prisma.meal.findMany({
+    where: { id: { in: mealIds } }
+  });
+
+  // 2️⃣ total price calculate করি
+  let totalPrice = 0;
+
+  const orderItemsData = items.map(item => {
+    const meal = meals.find(m => m.id === item.mealId);
+
+    if (!meal) {
+      throw new Error("Meal not found");
+    }
+
+    const itemTotal = meal.price * item.quantity;
+    totalPrice += itemTotal;
+
+    return {
+      mealId: meal.id,
+      quantity: item.quantity,
+      price: meal.price
+    };
+  });
+
+  // 3️⃣ Transaction দিয়ে order + orderItems create
+  const order = await prisma.order.create({
+    data: {
+      userId,
+      deliveryAddress,
+      paymentMethod,
+      totalPrice,
+      items: {
+        create: orderItemsData
+      }
+    },
+    include: {
+      items: true
+    }
+  });
+
+  res.status(201).json(order);
+};
+*/
