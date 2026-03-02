@@ -18,7 +18,17 @@ const createCategory = async (payload: Category) => {
 };
 
 const getAllCategory = async () => {
-  const result = await prisma.providerProfile.findMany();
+  const result = await prisma.category.findMany({
+    select: {
+      name: true,
+      meals: {
+        select: {
+          title: true,
+        },
+      },
+    },
+  });
+
   if (!result) {
     throw new Error("No Provider Found!!");
   }

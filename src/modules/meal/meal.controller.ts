@@ -4,7 +4,7 @@ import { mealService } from "./meal.service";
 
 const getAllMeal = async (req: Request, res: Response) => {
   try {
-    const result = await mealService.getAllMeal;
+    const result = await mealService.getAllMeal();
 
     return res.status(200).json({
       success: true,

@@ -9,7 +9,7 @@ import { categoryRouter } from "../modules/category/category.route";
 const routes = Router();
 
 routes.use("/auth", authRouter);
-routes.use("/category", auth(UserRole.admin), categoryRouter);
+routes.use("/category", categoryRouter);
 routes.use("/meals", mealRouter);
 routes.use("/providers", providerRouter);
 // routes.use("/meals/", authRouter);
@@ -19,9 +19,10 @@ export default routes;
 
 /*
  ***********admin:
-    name:
-    email:
-    token:
+    name:adminMoheb
+    email:adminmoheb@gmail.com
+    password: admin1234
+    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4ZjM3YzgzLTc1NTItNDYzNS04ZjdmLWM4OTkxNzNkNjJmMiIsIm5hbWUiOiJwcm9Nb2hlYiIsImVtYWlsIjoibW9oZWJAcHJvdmlkZXIuY29tIiwicm9sZSI6IlBST1ZJREVSIiwiaWF0IjoxNzcyMzcwODUwLCJleHAiOjE3NzI5NzU2NTB9.uk6nLc7t2RoEgXPOW81bnoRAdczwVs2RQ8v3_YztztI
 
 ************* customer:
      name:
@@ -29,7 +30,7 @@ export default routes;
     token:
 
    **************** provider:
-    name:
-    email:
-    token:
+    name:proMoheb
+    email:moheb@provider.com
+    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4ZjM3YzgzLTc1NTItNDYzNS04ZjdmLWM4OTkxNzNkNjJmMiIsIm5hbWUiOiJwcm9Nb2hlYiIsImVtYWlsIjoibW9oZWJAcHJvdmlkZXIuY29tIiwicm9sZSI6IlBST1ZJREVSIiwiaWF0IjoxNzcyMzcwODUwLCJleHAiOjE3NzI5NzU2NTB9.uk6nLc7t2RoEgXPOW81bnoRAdczwVs2RQ8v3_YztztI
 */

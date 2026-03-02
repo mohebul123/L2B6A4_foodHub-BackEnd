@@ -1,9 +1,9 @@
-import { RequestHandler } from "express";
+import { NextFunction, RequestHandler } from "express";
 import { authService } from "./auth.service";
 import sendResponse from "../../utils/sendRes";
 import { JwtPayload } from "jsonwebtoken";
 
-const register: RequestHandler = async (req, res) => {
+const register: RequestHandler = async (req, res, next) => {
   const payload = req.body;
 
   try {
@@ -15,10 +15,10 @@ const register: RequestHandler = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("Something went wrong: ", error);
+    next(error);
   }
 };
-const login: RequestHandler = async (req, res) => {
+const login: RequestHandler = async (req, res, next) => {
   const payload = req.body;
   try {
     const result = await authService.login(payload);
@@ -34,16 +34,11 @@ const login: RequestHandler = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: "Something went wrong",
-      data: error,
-    });
+    next(error);
   }
 };
 
-const getCurrentUser: RequestHandler = async (req, res) => {
+const getCurrentUser: RequestHandler = async (req, res, next) => {
   try {
     const result = req.user;
     sendResponse(res, {
@@ -53,12 +48,7 @@ const getCurrentUser: RequestHandler = async (req, res) => {
       data: result as JwtPayload,
     });
   } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: "Something went wrong",
-      data: error,
-    });
+    next(error);
   }
 };
 export const authController = {
