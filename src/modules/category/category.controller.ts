@@ -1,56 +1,31 @@
 import { Request, Response } from "express";
+import catchAsync from "../../shared/catchAsync";
+import sendResponse from "../../utils/sendRes";
 import { categoryService } from "./category.service";
 
-const createCategory = async (req: Request, res: Response) => {
-  try {
-    const result = await categoryService.createCategory(req.body);
-    res.status(201).json({
-      success: true,
-      message: "Category created successfully",
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+const createCategory = catchAsync(async (req: Request, res: Response) => {
+  const result = await categoryService.createCategory(req.body);
 
-const getAllCategory = async (req: Request, res: Response) => {
-  try {
-    const result = await categoryService.getAllCategory();
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Category created successfully!",
+    data: result,
+  });
+});
 
-    return res.status(200).json({
-      success: true,
-      message: "All Category retrieved successfully",
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-// const getProviderById = async (req: Request, res: Response) => {
-//   const id = req.params.mealId;
-//   try {
-//     const result = await providerService.getProviderById(id as string);
-//     res.status(200).json({
-//       success: true,
-//       message: "Meal retrieved successfully",
-//       data: result,
-//     });
-//   } catch (error: any) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
+const getAllCategories = catchAsync(async (req: Request, res: Response) => {
+  const result = await categoryService.getAllCategory();
 
-export const categoryController = {
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Categories fetched successfully!",
+    data: result,
+  });
+});
+
+export const CategoryController = {
   createCategory,
-  getAllCategory,
+  getAllCategories,
 };

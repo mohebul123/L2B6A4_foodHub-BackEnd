@@ -111,29 +111,25 @@ const updateMealbyId = async (
   mealId: string,
   userId: string,
 ) => {
-  //provider profile ki exist kore?
-  //meal ta ki exist kore?
-
   const profile = await prisma.providerProfile.findUnique({
-    where: {
-      userId,
-    },
+    where: { userId },
   });
-  if (!profile) {
-    throw new Error("This meal have no provider right now!!");
-  }
+
+  if (!profile) throw new Error("Provider profile not found!");
+
   const meal = await prisma.meal.findUnique({
-    where: {
-      id: mealId,
-    },
+    where: { id: mealId },
   });
-  if (!meal) {
-    throw new Error("This meal is not available to update");
+
+  if (!meal) throw new Error("Meal not found!");
+
+  // 🔥 CRITICAL SECURITY CHECK: Check if this meal belongs to this provider
+  if (meal.providerId !== profile.id) {
+    throw new Error("You are not authorized to update this meal!");
   }
+
   const result = await prisma.meal.update({
-    where: {
-      id: mealId,
-    },
+    where: { id: mealId },
     data: updateDetails,
   });
 

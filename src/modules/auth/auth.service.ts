@@ -2,7 +2,6 @@ import { prisma } from "../../lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import config from "../../config";
-import { RequestHandler } from "express";
 
 interface userInfo {
   name: string;

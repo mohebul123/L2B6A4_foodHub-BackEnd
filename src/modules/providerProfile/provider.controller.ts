@@ -93,44 +93,35 @@ const getAllProvider = async (req: Request, res: Response) => {
   }
 };
 const getProviderById = async (req: Request, res: Response) => {
-  const id = req.params.mealId;
+  const { providerId } = req.params; // Router-er variable name match koraite hobe
   try {
-    const result = await providerService.getProviderById(id as string);
+    const result = await providerService.getProviderById(providerId as string);
     res.status(200).json({
       success: true,
-      message: "Meal retrieved successfully",
+      message: "Provider retrieved successfully",
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 const updateMealbyId = async (req: Request, res: Response) => {
-  const mealId = req.params.mealId as string;
-  const userId = req.user?.id;
-  if (!mealId) {
-    throw new Error("MealId is not found");
-  }
+  const { mealId } = req.params;
+  const userId = (req as any).user?.id; // Casting for TS
+
   try {
     const result = await providerService.updateMealbyId(
       req.body,
-      mealId,
+      mealId as string,
       userId,
     );
-
     return res.status(200).json({
       success: true,
       message: "Meal updated successfully",
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 export const providerController = {

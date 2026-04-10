@@ -1,11 +1,11 @@
 import { Router } from "express";
 
 import auth, { UserRole } from "../../middleware/auth";
-import { categoryController } from "./category.controller";
+import { CategoryController } from "./category.controller";
 
 const router = Router();
-router.post("/", auth(UserRole.admin), categoryController.createCategory);
-router.get("/", categoryController.getAllCategory);
+router.post("/", auth(UserRole.admin), CategoryController.createCategory);
+router.get("/", CategoryController.getAllCategories);
 // router.get("/", categoryController.getAllCategory);
 // router.get("/:providerId", providerController.getProviderById);
 // router.post("/meals", auth(UserRole.provider), providerController.createMeal);
