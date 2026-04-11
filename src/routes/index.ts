@@ -7,6 +7,7 @@ import auth, { UserRole } from "../middleware/auth";
 import { categoryRouter } from "../modules/category/category.route";
 import { orderRouter } from "../modules/order/order.route";
 import { adminRouter } from "../modules/admin/admin.route";
+import { reviewRouter } from "../modules/review/review.route";
 
 const routes = Router();
 
@@ -16,6 +17,7 @@ routes.use("/meals", mealRouter);
 routes.use("/providers", providerRouter);
 routes.use("/orders", orderRouter);
 routes.use("/admin", adminRouter);
+routes.use("/reviews", reviewRouter);
 
 // routes.use("/meals/", authRouter);
 // routes.use("/orders/", authRouter);

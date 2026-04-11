@@ -1,5 +1,9 @@
 import { JwtPayload } from "jsonwebtoken";
-import { Meal, ProviderProfile } from "../../generated/prisma/client";
+import {
+  Meal,
+  OrderStatus,
+  ProviderProfile,
+} from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { MealScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace";
 
@@ -136,6 +140,14 @@ const updateMealbyId = async (
   return result;
 };
 
+// Add this to provider.service.ts
+const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+  const result = await prisma.order.update({
+    where: { id: orderId },
+    data: { status },
+  });
+  return result;
+};
 export const providerService = {
   createMeal,
   createProviderProfile,
@@ -144,4 +156,5 @@ export const providerService = {
   getAllProvider,
   getProviderById,
   updateMealbyId,
+  updateOrderStatus,
 };

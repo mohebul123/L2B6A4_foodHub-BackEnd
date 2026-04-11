@@ -5,6 +5,17 @@ const getAllUsers = async () => {
   return result;
 };
 
+const updateUserStatus = async (
+  userId: string,
+  status: "ACTIVE" | "SUSPENDED",
+) => {
+  const result = await prisma.user.update({
+    where: { id: userId },
+    data: { status },
+  });
+  return result;
+};
 export const adminService = {
   getAllUsers,
+  updateUserStatus,
 };

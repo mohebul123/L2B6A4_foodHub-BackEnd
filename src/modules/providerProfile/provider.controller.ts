@@ -124,6 +124,29 @@ const updateMealbyId = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const updateOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body; // PLACED, PREPARING, READY, DELIVERED, CANCELLED
+
+    const result = await providerService.updateOrderStatus(
+      orderId as string,
+      status,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 export const providerController = {
   createMeal,
   createProviderProfile,
@@ -132,4 +155,5 @@ export const providerController = {
   getAllProvider,
   getProviderById,
   updateMealbyId,
+  updateOrderStatus,
 };
