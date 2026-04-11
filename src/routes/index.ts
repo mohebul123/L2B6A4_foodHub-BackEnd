@@ -29,15 +29,21 @@ export default routes;
     name:adminMoheb
     email:adminmoheb@gmail.com
     password: admin1234
-    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc5MTdlZmIxLWIwYmQtNGM0NC1hZTFlLTZkNmEyMjQ3YjA1ZiIsIm5hbWUiOiJhZG1pbk1vaGViIiwiZW1haWwiOiJhZG1pbm1vaGViQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3MjQ4MjAzMiwiZXhwIjoxNzczMDg2ODMyfQ.g2g_KbU3tZmTzaGuJIkm-mr6KTvyYznEFzkh1L6c-Ck
+    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc5MTdlZmIxLWIwYmQtNGM0NC1hZTFlLTZkNmEyMjQ3YjA1ZiIsIm5hbWUiOiJhZG1pbk1vaGViIiwiZW1haWwiOiJhZG1pbm1vaGViQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3NTkwODg4MCwiZXhwIjoxNzc2NTEzNjgwfQ.Jzl3pYU4Ov8RJz9C6IZk-jBO0AFRpi9cQmhwG7LD7Cg
 
 ************* customer:
-     name:
-    email:customer1234
-    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEwNWViODY3LWFkMzItNDcxZS05YWYzLTJmMzE3ZTJmZTg3OCIsIm5hbWUiOiJjdXN0b21lciBtb2hlYiIsImVtYWlsIjoiY3VzdG9tZXJtb2hlYkBnbWFpbC5jb20iLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3NzI0Nzc0NDUsImV4cCI6MTc3MzA4MjI0NX0.acBIBgdAHL-nqC0-GcUsSjXcw6rer0qHOr7cdxBuhEk
-
+     NAME :Maria akter
+    EMAIL:maria@customer.com
+    pass: pass1234
+    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJhNGM4YTYxLTUxYjQtNDQ5NS1iN2MxLTI2MDA3Yzc1MDk2NSIsIm5hbWUiOiJNYXJpYSBha3RlciIsImVtYWlsIjoibWFyaWFAY3VzdG9tZXIuY29tIiwicm9sZSI6IkNVU1RPTUVSIiwiaWF0IjoxNzc1OTEwNDExLCJleHAiOjE3NzY1MTUyMTF9.sBHQWHFK8ctALITjARuWCF6YcaFs-0WVzVakzaYzgj0
    **************** provider:
     name:proMoheb
     email:moheb@provider.com
-    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4ZjM3YzgzLTc1NTItNDYzNS04ZjdmLWM4OTkxNzNkNjJmMiIsIm5hbWUiOiJwcm9Nb2hlYiIsImVtYWlsIjoibW9oZWJAcHJvdmlkZXIuY29tIiwicm9sZSI6IlBST1ZJREVSIiwiaWF0IjoxNzcyMzcwODUwLCJleHAiOjE3NzI5NzU2NTB9.uk6nLc7t2RoEgXPOW81bnoRAdczwVs2RQ8v3_YztztI
+    token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4ZjM3YzgzLTc1NTItNDYzNS04ZjdmLWM4OTkxNzNkNjJmMiIsIm5hbWUiOiJwcm9Nb2hlYiIsImVtYWlsIjoibW9oZWJAcHJvdmlkZXIuY29tIiwicm9sZSI6IlBST1ZJREVSIiwiaWF0IjoxNzc1OTExNTg5LCJleHAiOjE3NzY1MTYzODl9.tF4Q1i_hIZ8Z5DH71uFZP6dXHracuwSXm1Gtzmixgq0
+
+    ************* Provicer 2
+
+    name: Jawad
+    email:jawad@provider.com
+    token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkxNmNiYmM1LTRhYjItNGRhYS04ZTM2LTdmMDg2MzM3Y2UxMSIsIm5hbWUiOiJKYXdhZCBob3NzYWluIiwiZW1haWwiOiJqYXdhZEBwcm92aWRlci5jb20iLCJyb2xlIjoiUFJPVklERVIiLCJpYXQiOjE3NzU5MDk4MDMsImV4cCI6MTc3NjUxNDYwM30.m1twK45gM5meMGPUq5b5meoloyfR7EKYQuce3RjagE8
 */

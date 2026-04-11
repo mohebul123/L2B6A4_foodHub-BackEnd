@@ -128,11 +128,13 @@ const updateMealbyId = async (req: Request, res: Response) => {
 const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { orderId } = req.params;
-    const { status } = req.body; // PLACED, PREPARING, READY, DELIVERED, CANCELLED
+    const { status } = req.body;
+    const providerId = (req as any).user.userId; // Tomar token payload onujayi field name check koro
 
     const result = await providerService.updateOrderStatus(
       orderId as string,
       status,
+      providerId,
     );
 
     res.status(200).json({
@@ -141,10 +143,7 @@ const updateOrderStatus = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(403).json({ success: false, message: error.message });
   }
 };
 export const providerController = {

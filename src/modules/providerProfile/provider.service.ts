@@ -141,11 +141,30 @@ const updateMealbyId = async (
 };
 
 // Add this to provider.service.ts
-const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+const updateOrderStatus = async (
+  orderId: string,
+  status: OrderStatus,
+  providerId: string,
+) => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { orderItems: { include: { meal: true } } },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  const isOwner = order.orderItems.some(
+    (item) => item.meal.providerId === providerId,
+  );
+
+  if (!isOwner) {
+    throw new Error("You are not authorized to update this order!");
+  }
   const result = await prisma.order.update({
     where: { id: orderId },
     data: { status },
   });
+
   return result;
 };
 export const providerService = {
