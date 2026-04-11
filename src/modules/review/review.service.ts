@@ -3,19 +3,38 @@ import { prisma } from "../../lib/prisma";
 
 const createReview = async (
   userId: string,
-  payload: { mealId: string; rating: number; comment?: string },
+  payload: { mealId: string; rating: number; comment: string },
 ) => {
-  // Check if the meal exists
-  const meal = await prisma.meal.findUnique({ where: { id: payload.mealId } });
-  if (!meal) throw new Error("Meal not found");
+  const { mealId, rating, comment } = payload;
 
-  const result = await prisma.review.create({
-    data: {
-      ...payload,
-      userId,
+  const hasOrdered = await prisma.order.findFirst({
+    where: {
+      customerId: userId,
+      status: "DELIVERED",
+      orderItems: {
+        some: {
+          mealId: mealId,
+        },
+      },
     },
   });
-  return result;
+
+  if (!hasOrdered) {
+    throw new Error(
+      "You can only review meals that you have successfully ordered and received.",
+    );
+  }
+
+  const review = await prisma.review.create({
+    data: {
+      userId,
+      mealId,
+      rating,
+      comment,
+    },
+  });
+
+  return review;
 };
 
 const getReviewsForMeal = async (mealId: string) => {

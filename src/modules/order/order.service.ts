@@ -11,22 +11,38 @@ type CreateOrderPayload = {
 
 const createOrder = async (userId: string, payload: CreateOrderPayload) => {
   const { deliveryAddress, orderItems } = payload;
+
   if (!orderItems || orderItems.length === 0) {
-    throw new Error("Items Not Founds");
+    throw new Error("Items Not Found");
   }
+
   const mealIds = orderItems.map((m) => m.mealId);
+
   const mealsDetailsFromDb = await prisma.meal.findMany({
     where: {
       id: { in: mealIds },
     },
   });
+
+  if (mealsDetailsFromDb.length !== mealIds.length) {
+    throw new Error("Some meals were not found in the database");
+  }
+
+  const providerIds = [...new Set(mealsDetailsFromDb.map((m) => m.providerId))];
+
+  if (providerIds.length > 1) {
+    throw new Error(
+      "You can only order from one restaurant/provider at a time.",
+    );
+  }
+
   let totalPrice = 0;
 
   const orderItemsData = orderItems.map((item) => {
     const meal = mealsDetailsFromDb.find((m) => m.id === item.mealId);
 
     if (!meal) {
-      throw new Error("Meal not found");
+      throw new Error(`Meal with ID ${item.mealId} not found`);
     }
 
     const itemTotal = meal.price * item.quantity;
@@ -51,6 +67,7 @@ const createOrder = async (userId: string, payload: CreateOrderPayload) => {
       orderItems: true,
     },
   });
+
   return order;
 };
 
