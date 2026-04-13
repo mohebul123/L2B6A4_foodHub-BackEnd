@@ -34,6 +34,27 @@ const getOrders = async (req: Request, res: Response) => {
     });
   }
 };
+
+const getProviderOrdersFromDB = async (req: Request, res: Response) => {
+  try {
+    // Dhorchi tomar auth middleware 'req.user' e ID diye diche
+    const userId = (req as any).user.id;
+
+    const result = await orderService.getProviderOrdersFromDB(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Provider orders fetched successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
 const getOrderById = async (req: Request, res: Response) => {
   try {
     const { orderID } = req.params; // Route param match koraite hobe
@@ -57,5 +78,6 @@ const getOrderById = async (req: Request, res: Response) => {
 export const orderController = {
   createOrder,
   getOrders,
+  getProviderOrdersFromDB,
   getOrderById,
 };

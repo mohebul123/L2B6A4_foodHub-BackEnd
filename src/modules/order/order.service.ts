@@ -89,6 +89,49 @@ const getOrders = async (customerId: string) => {
   return result;
 };
 
+const getProviderOrdersFromDB = async (userId: string) => {
+  // 1. Prothome user-er ProviderProfile ID ber kora
+  const providerProfile = await prisma.providerProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (!providerProfile) {
+    throw new Error("Provider profile not found!");
+  }
+
+  // 2. Oi profile ID diye orders filter kora
+  const orders = await prisma.order.findMany({
+    where: {
+      orderItems: {
+        some: {
+          meal: {
+            providerId: providerProfile.id,
+          },
+        },
+      },
+    },
+    include: {
+      customer: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+      orderItems: {
+        include: {
+          meal: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return orders;
+};
+
 const getOrderById = async (orderId: string) => {
   const result = await prisma.order.findUnique({
     where: {
@@ -100,6 +143,7 @@ const getOrderById = async (orderId: string) => {
 export const orderService = {
   createOrder,
   getOrders,
+  getProviderOrdersFromDB,
   getOrderById,
 };
 
