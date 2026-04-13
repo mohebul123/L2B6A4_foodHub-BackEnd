@@ -35,20 +35,30 @@ const createProviderProfile = async (
   payload: ProviderProfile,
   userId: string,
 ) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  if (!user) {
-    throw new Error("Invalid user");
-  }
-  const result = await prisma.providerProfile.create({
-    data: { ...payload, userId },
-  });
-  return result;
-};
+  return await prisma.$transaction(async (tx) => {
+    const user = await tx.user.findUnique({
+      where: { id: userId },
+    });
 
+    if (!user) {
+      throw new Error("Invalid user");
+    }
+
+    const profile = await tx.providerProfile.create({
+      data: {
+        ...payload,
+        userId,
+      },
+    });
+
+    await tx.user.update({
+      where: { id: userId },
+      data: { role: "PROVIDER" },
+    });
+
+    return profile;
+  });
+};
 const getOwnProviderProfile = async (userId: string) => {
   const result = await prisma.providerProfile.findUnique({
     where: {
@@ -140,12 +150,21 @@ const updateMealbyId = async (
   return result;
 };
 
-// Add this to provider.service.ts
 const updateOrderStatus = async (
   orderId: string,
   status: OrderStatus,
-  providerId: string,
+  userId: string, // Ekhane userId ashbe req.user theke
 ) => {
+  // 1. Prothome check koro ei User-er kono Provider Profile ache kina
+  const providerProfile = await prisma.providerProfile.findUnique({
+    where: { userId: userId },
+  });
+
+  if (!providerProfile) {
+    throw new Error("Provider profile not found for this user!");
+  }
+
+  // 2. Ekhon order details fetch koro
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { orderItems: { include: { meal: true } } },
@@ -153,13 +172,16 @@ const updateOrderStatus = async (
 
   if (!order) throw new Error("Order not found");
 
+  // 3. Ekhon match koro ProviderProfile ID-r sathe (User ID-r sathe noy)
   const isOwner = order.orderItems.some(
-    (item) => item.meal.providerId === providerId,
+    (item) => item.meal.providerId === providerProfile.id, // Profile ID match!
   );
 
   if (!isOwner) {
     throw new Error("You are not authorized to update this order!");
   }
+
+  // 4. Update order status
   const result = await prisma.order.update({
     where: { id: orderId },
     data: { status },

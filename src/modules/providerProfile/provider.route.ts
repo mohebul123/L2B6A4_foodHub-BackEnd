@@ -6,7 +6,7 @@ import auth, { UserRole } from "../../middleware/auth";
 const router = Router();
 router.post(
   "/profile",
-  auth(UserRole.provider),
+  auth(UserRole.provider, UserRole.customer),
   providerController.createProviderProfile,
 );
 router.get(

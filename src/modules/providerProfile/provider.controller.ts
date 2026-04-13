@@ -129,8 +129,7 @@ const updateOrderStatus = async (req: Request, res: Response) => {
   try {
     const { orderId } = req.params;
     const { status } = req.body;
-    const providerId = (req as any).user.userId; // Tomar token payload onujayi field name check koro
-
+    const providerId = req.user?.id;
     const result = await providerService.updateOrderStatus(
       orderId as string,
       status,
