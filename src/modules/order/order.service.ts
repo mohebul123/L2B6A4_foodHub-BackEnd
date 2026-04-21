@@ -77,13 +77,21 @@ const getOrders = async (customerId: string) => {
       customerId,
     },
     include: {
-      orderItems: true,
+      // ✅ Eikhane meal-keo include korte hobe jate frontend-e title pawa jay
+      orderItems: {
+        include: {
+          meal: true,
+        },
+      },
       customer: {
         select: {
           name: true,
           email: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc", // Latest orders upore thakbe
     },
   });
   return result;
