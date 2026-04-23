@@ -25,7 +25,28 @@ const getAllCategories = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const result = await categoryService.deleteCategory(id as string);
+
+    // Service jodi error na khai, tobei eikhane ashbe
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    // Service e "throw new Error" hole eikhane ashbe
+    res.status(400).json({
+      success: false,
+      message: error.message || "Failed to delete category",
+    });
+  }
+};
+
 export const CategoryController = {
   createCategory,
   getAllCategories,
+  deleteCategory,
 };

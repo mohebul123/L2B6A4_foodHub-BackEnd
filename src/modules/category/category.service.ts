@@ -20,6 +20,7 @@ const createCategory = async (payload: Category) => {
 const getAllCategory = async () => {
   const result = await prisma.category.findMany({
     select: {
+      id: true,
       name: true,
       meals: {
         select: {
@@ -34,23 +35,29 @@ const getAllCategory = async () => {
   }
   return result;
 };
-// const getCategoryById = async (id: string) => {
-//   const result = await prisma.providerProfile.findUnique({
-//     where: {
-//       id,
-//     },
-//     include: {
-//       meals: true,
-//     },
-//   });
-//   if (!result) {
-//     throw new Error("Provider not found");
-//   }
-//   return result;
-// };
+
+export const deleteCategory = async (id: string) => {
+  // 1. Check koro kono meal ei category-te ache kina
+  const existingMeals = await prisma.meal.findFirst({
+    where: { categoryId: id },
+  });
+
+  if (existingMeals) {
+    // return na kore throw koro, jate Catch block e jay
+    throw new Error("There have meals under this category inside the DB!!");
+  }
+
+  // 2. Jodi meal na thake, tobe delete koro
+  const result = await prisma.category.delete({
+    where: { id },
+  });
+
+  return result; // Database object return korbe
+};
 
 export const categoryService = {
   createCategory,
   getAllCategory,
+  deleteCategory,
   //   getProviderById,
 };

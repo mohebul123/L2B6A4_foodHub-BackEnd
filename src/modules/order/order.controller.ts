@@ -34,6 +34,22 @@ const getOrders = async (req: Request, res: Response) => {
     });
   }
 };
+const getAllOrders = async (req: Request, res: Response) => {
+  try {
+    const customerId = req.user?.id;
+    const result = await orderService.getAllOrders(customerId);
+    res.status(201).json({
+      success: true,
+      message: "All Orders Retrived Successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 const getProviderOrdersFromDB = async (req: Request, res: Response) => {
   try {
@@ -78,6 +94,7 @@ const getOrderById = async (req: Request, res: Response) => {
 export const orderController = {
   createOrder,
   getOrders,
+  getAllOrders,
   getProviderOrdersFromDB,
   getOrderById,
 };

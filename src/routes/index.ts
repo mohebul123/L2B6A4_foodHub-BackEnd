@@ -8,6 +8,7 @@ import { categoryRouter } from "../modules/category/category.route";
 import { orderRouter } from "../modules/order/order.route";
 import { adminRouter } from "../modules/admin/admin.route";
 import { reviewRouter } from "../modules/review/review.route";
+import { userRouter } from "../modules/user/user.route";
 
 const routes = Router();
 
@@ -18,6 +19,7 @@ routes.use("/providers", providerRouter);
 routes.use("/orders", orderRouter);
 routes.use("/admin", adminRouter);
 routes.use("/reviews", reviewRouter);
+routes.use("/users", userRouter);
 
 // routes.use("/meals/", authRouter);
 // routes.use("/orders/", authRouter);

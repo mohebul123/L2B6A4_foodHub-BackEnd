@@ -96,6 +96,27 @@ const getOrders = async (customerId: string) => {
   });
   return result;
 };
+const getAllOrders = async (customerId: string) => {
+  const result = await prisma.order.findMany({
+    include: {
+      orderItems: {
+        include: {
+          meal: true,
+        },
+      },
+      customer: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc", // Latest orders upore thakbe
+    },
+  });
+  return result;
+};
 
 const getProviderOrdersFromDB = async (userId: string) => {
   // 1. Prothome user-er ProviderProfile ID ber kora
@@ -151,6 +172,7 @@ const getOrderById = async (orderId: string) => {
 export const orderService = {
   createOrder,
   getOrders,
+  getAllOrders,
   getProviderOrdersFromDB,
   getOrderById,
 };

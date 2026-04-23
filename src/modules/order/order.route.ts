@@ -6,6 +6,7 @@ const router = Router();
 
 router.post("/", auth(UserRole.customer), orderController.createOrder);
 router.get("/", auth(UserRole.customer), orderController.getOrders);
+router.get("/allOrders", auth(UserRole.admin), orderController.getAllOrders);
 router.get(
   "/provider-orders",
   auth(UserRole.provider),
