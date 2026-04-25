@@ -19,7 +19,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const updateUserStatus = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { status } = req.body; // Frontend theke status (ACTIVE/SUSPENDED) pathabe
+    const { status } = req.body;
 
     const result = await adminService.updateUserStatus(
       userId as string,
