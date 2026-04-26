@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { prisma } from "../../lib/prisma";
 import { mealService } from "./meal.service";
 
 const getAllMeal = async (req: Request, res: Response) => {

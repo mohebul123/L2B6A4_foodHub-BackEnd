@@ -59,26 +59,7 @@ const login = async (payload: userInfo) => {
   };
 };
 
-// const getCurrentUser: RequestHandler = async (req) => {
-//   const user = req.user;
-//   if (!user) {
-//     throw new Error("User Not Found,Please Login");
-//   }
-
-//   const result = await prisma.user.findUnique({
-//     where: {
-//       id: user.id,
-//     },
-//   });
-//   if (!result) {
-//     throw new Error("No user Found,register first");
-//   }
-
-//   return result;
-// };
-
 export const authService = {
   register,
   login,
-  // getCurrentUser,
 };

@@ -37,7 +37,7 @@ export const createMealSchema = z.object({
     price: z.number().positive("Price must be a positive number"),
     categoryId: z.string().min(1, "Category ID is required"),
     image: z.string().url("Invalid image URL").optional().or(z.literal("")),
-    isAvailable: z.boolean().optional().default(true), // Eita add koro
+    isAvailable: z.boolean().optional().default(true),
   }),
 });
 

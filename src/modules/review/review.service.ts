@@ -25,7 +25,6 @@ const createReview = async (
     );
   }
 
-  // Add this check inside createReview before creating the review
   const existingReview = await prisma.review.findFirst({
     where: { userId, mealId },
   });

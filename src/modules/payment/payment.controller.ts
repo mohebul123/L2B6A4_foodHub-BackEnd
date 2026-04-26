@@ -5,8 +5,6 @@ import { prisma } from "../../lib/prisma";
 const handleStripeWebhook = async (req: Request, res: Response) => {
   let event = req.body;
 
-  // ⚠️ IMPORTANT: Jodi app.ts-e express.raw use koro, tobe eita Buffer thakbe.
-  // Shetake parse kore JSON banate hobe.
   try {
     if (Buffer.isBuffer(req.body)) {
       event = JSON.parse(req.body.toString());
@@ -16,11 +14,11 @@ const handleStripeWebhook = async (req: Request, res: Response) => {
     return res.status(400).send("Webhook Error");
   }
 
-  console.log("Received Event Type:", event.type); // Terminal-e check koro ki ashe
+  console.log("Received Event Type:", event.type);
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
-    const orderId = session?.metadata?.orderId; // Metadata check koro
+    const orderId = session?.metadata?.orderId;
 
     console.log("Attempting to update Order ID:", orderId);
 

@@ -12,12 +12,6 @@ export enum UserRole {
 const auth = (...roles: UserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Is token exists .
-      // verify token .
-      // Is decoded user exists .
-      // Is users status Active  .
-      // check Role
-
       const token = req.headers.authorization?.split(" ")[1];
 
       if (!token) {

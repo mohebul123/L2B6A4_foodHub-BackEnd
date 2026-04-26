@@ -15,7 +15,31 @@ const updateUserStatus = async (
   });
   return result;
 };
+
+const getAdminStats = async () => {
+  const totalUsers = await prisma.user.count({
+    where: { role: "CUSTOMER" },
+  });
+
+  const totalProviders = await prisma.user.count({
+    where: { role: "PROVIDER" },
+  });
+
+  const totalOrders = await prisma.order.count();
+
+  // Jodi providerProfile separate count korte chao
+  const activeRestaurants = await prisma.providerProfile.count();
+
+  return {
+    totalUsers,
+    totalProviders,
+    totalOrders,
+    activeRestaurants,
+  };
+};
+
 export const adminService = {
   getAllUsers,
   updateUserStatus,
+  getAdminStats,
 };

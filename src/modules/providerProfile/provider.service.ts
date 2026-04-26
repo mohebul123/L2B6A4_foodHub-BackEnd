@@ -5,7 +5,6 @@ import {
   ProviderProfile,
 } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-import { MealScalarFieldEnum } from "../../generated/prisma/internal/prismaNamespace";
 
 const createMeal = async (payload: Meal, userId: string) => {
   const provider = await prisma.providerProfile.findUnique({
@@ -136,8 +135,6 @@ const updateMealbyId = async (
   });
 
   if (!meal) throw new Error("Meal not found!");
-
-  // 🔥 CRITICAL SECURITY CHECK: Check if this meal belongs to this provider
   if (meal.providerId !== profile.id) {
     throw new Error("You are not authorized to update this meal!");
   }
@@ -153,9 +150,8 @@ const updateMealbyId = async (
 const updateOrderStatus = async (
   orderId: string,
   status: OrderStatus,
-  userId: string, // Ekhane userId ashbe req.user theke
+  userId: string,
 ) => {
-  // 1. Prothome check koro ei User-er kono Provider Profile ache kina
   const providerProfile = await prisma.providerProfile.findUnique({
     where: { userId: userId },
   });
@@ -172,16 +168,13 @@ const updateOrderStatus = async (
 
   if (!order) throw new Error("Order not found");
 
-  // 3. Ekhon match koro ProviderProfile ID-r sathe (User ID-r sathe noy)
   const isOwner = order.orderItems.some(
-    (item) => item.meal.providerId === providerProfile.id, // Profile ID match!
+    (item) => item.meal.providerId === providerProfile.id,
   );
 
   if (!isOwner) {
     throw new Error("You are not authorized to update this order!");
   }
-
-  // 4. Update order status
   const result = await prisma.order.update({
     where: { id: orderId },
     data: { status },

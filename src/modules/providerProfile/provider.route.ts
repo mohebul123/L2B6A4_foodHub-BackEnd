@@ -47,6 +47,5 @@ router.patch(
   auth(UserRole.provider),
   providerController.updateOrderStatus,
 );
-// router.post("/meals", providerController.getProviderById);
 
 export const providerRouter = router;

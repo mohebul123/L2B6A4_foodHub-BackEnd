@@ -7,26 +7,9 @@ const catchAsync = (fn: RequestHandler) => {
       await fn(req, res, next);
     } catch (error: any) {
       console.log(error);
-      // res.status(500).json({
-      //   success: false,
-      //   message: "failed to fetch",
-      //   error: error.message,
-      // });
       next(error);
     }
   };
 };
 
 export default catchAsync;
-// fn call here
-
-// const getAllSpecialites = catchAsync(
-//     async (req: Request,res:Response) =>{
-//         const result = await SpecialityService.getAllSpecialiteis();
-//         res.status(200).json({
-//             success: true,
-//             message: 'Specialitesw fetched successfully',
-//             data: result
-//         })
-//     }
-// )

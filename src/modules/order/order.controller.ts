@@ -50,10 +50,8 @@ const getAllOrders = async (req: Request, res: Response) => {
     });
   }
 };
-
 const getProviderOrdersFromDB = async (req: Request, res: Response) => {
   try {
-    // Dhorchi tomar auth middleware 'req.user' e ID diye diche
     const userId = (req as any).user.id;
 
     const result = await orderService.getProviderOrdersFromDB(userId);
@@ -73,8 +71,8 @@ const getProviderOrdersFromDB = async (req: Request, res: Response) => {
 
 const getOrderById = async (req: Request, res: Response) => {
   try {
-    const { orderID } = req.params; // Route param match koraite hobe
-    const result = await orderService.getOrderById(orderID as string); // Service name correct koro
+    const { orderID } = req.params;
+    const result = await orderService.getOrderById(orderID as string);
 
     if (!result) {
       return res

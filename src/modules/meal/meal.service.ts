@@ -1,15 +1,5 @@
 import { Meal } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-// interface Imeal {
-//   title: string;
-//   description: string;
-//   price: string;
-//   image?: string;
-//   isAvailable: true;
-//   providerId: string;
-//   categoryId: string;
-// }
-
 const getAllMeal = async () => {
   const result = await prisma.meal.findMany({
     include: {
