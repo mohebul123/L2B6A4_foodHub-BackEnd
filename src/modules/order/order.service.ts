@@ -69,8 +69,8 @@ export const createOrder = async (userId: string, payload: any) => {
       payment_method_types: ["card"],
       mode: "payment",
 
-      success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.CLIENT_URL}/cart`,
+      success_url: `https://foodhub-frontend-red.vercel.app/payment-success?session_id={CHECKOUT_SESSION_ID`,
+      cancel_url: `https://foodhub-frontend-red.vercel.app/cart`,
       metadata: {
         orderId: order.id,
       },
