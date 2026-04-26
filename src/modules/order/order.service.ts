@@ -3,19 +3,25 @@ import { srtripe } from "../../config/stripe.config";
 import { Order } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
-type CreateOrderPayload = {
-  deliveryAddress: string;
-  orderItems: {
-    mealId: string;
-    quantity: number;
-  }[];
-};
+// type CreateOrderPayload = {
+//   deliveryAddress: string;
+//   orderItems: {
+//     mealId: string;
+//     quantity: number;
+//   }[];
+// };
+
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2025-01-27" as any,
+});
 
 export const createOrder = async (userId: string, payload: any) => {
   const { deliveryAddress, orderItems, paymentMethod } = payload;
 
   if (!orderItems || orderItems.length === 0)
     throw new Error("Items Not Found");
+
   const mealIds = orderItems.map((m: any) => m.mealId);
   const mealsFromDb = await prisma.meal.findMany({
     where: { id: { in: mealIds } },
@@ -29,11 +35,14 @@ export const createOrder = async (userId: string, payload: any) => {
     if (!meal) throw new Error(`Meal not found`);
 
     totalPrice += meal.price * item.quantity;
+
     if (paymentMethod === "ONLINE") {
       lineItems.push({
         price_data: {
           currency: "bdt",
-          product_data: { name: meal.title },
+          product_data: {
+            name: meal.title,
+          },
           unit_amount: Math.round(meal.price * 100),
         },
         quantity: item.quantity,
@@ -54,12 +63,14 @@ export const createOrder = async (userId: string, payload: any) => {
   });
 
   let paymentUrl = null;
+
   if (paymentMethod === "ONLINE") {
-    const session = await srtripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: `${config.client_url}/payment-success`,
-      cancel_url: `${config.client_url}/cart`,
+
+      success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.CLIENT_URL}/cart`,
       metadata: {
         orderId: order.id,
       },

@@ -1,24 +1,30 @@
-import express from "express";
-import { Response, Request } from "express";
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import { authRouter } from "./modules/auth/auth.route";
-import routes from "./routes";
-import globalErrorHandler from "./middleware/globalErrorHandler";
-import { notFound } from "./middleware/notFound";
-import { PaymentRoutes } from "./modules/payment/payment.route";
+import router from "./routes";
+import { PaymentController } from "./modules/payment/payment.controller";
 
-const PORT = 5000;
+const app: Application = express();
 
-const app = express();
+app.use(
+  cors({
+    origin: [process.env.CLIENT_URL as string, "http://localhost:3000"],
+    credentials: true,
+  }),
+);
 
-//web Hook
-app.post("/webhook", express.raw({ type: "application/json" }), PaymentRoutes);
+app.post(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentController.handleStripeWebhook,
+);
+
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
-//applications Rotes
-app.use("/api/", routes);
+app.use("/api/v1", router);
 
-app.use(globalErrorHandler);
-app.use(notFound);
+app.get("/", (req: Request, res: Response) => {
+  res.send("FoodHub Server is Running! 🚀");
+});
+
 export default app;

@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "postinstall": "prisma generate",
+    "lint": "eslint .",
     "dev": "npx tsx watch src/server.ts",
     "seed:admin": "npx tsx src/scripts/seedAdmin.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,6 +29,7 @@
     "stripe": "^22.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
+    "vercel": "^52.0.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
