@@ -32,8 +32,8 @@ router.get("/", providerController.getAllProvider);
 router.get("/:providerId", providerController.getProviderById);
 router.post(
   "/meals",
-  validateRequest(createMealSchema),
   auth(UserRole.provider),
+  validateRequest(createMealSchema),
   providerController.createMeal,
 );
 router.put(

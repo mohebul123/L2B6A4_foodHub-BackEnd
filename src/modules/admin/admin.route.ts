@@ -10,7 +10,6 @@ router.get("/users", auth(UserRole.admin), adminController.getAllUsers);
 
 router.patch(
   "/users/:userId",
-  validateRequest(updateCategorySchema),
   auth(UserRole.admin),
   adminController.updateUserStatus,
 );

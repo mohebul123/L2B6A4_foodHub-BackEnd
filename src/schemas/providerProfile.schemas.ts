@@ -17,8 +17,7 @@ export const createProviderProfileSchema = z.object({
       .regex(
         /^(?:\+88|88)?(01[3-9]\d{8})$/,
         "Invalid Bangladeshi phone number",
-      ), // Optional: BD phone validation
-    userId: z.string().min(1, "User ID is required"),
+      ),
   }),
 });
 
@@ -33,22 +32,12 @@ export const updateProviderProfileSchema = z.object({
 
 export const createMealSchema = z.object({
   body: z.object({
-    title: z
-      .string()
-      .min(1, "Meal title is required")
-      .max(100, "Title is too long"),
-    description: z
-      .string()
-      .min(10, "Description should be at least 10 characters long"),
-    price: z
-      .number({
-        error: "Price is required",
-      })
-      .positive("Price must be greater than 0"),
-    image: z.string().url("Invalid image URL").optional(),
-    isAvailable: z.boolean().default(true).optional(),
-    providerId: z.string().min(1, "Provider ID is required"),
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    price: z.number().positive("Price must be a positive number"),
     categoryId: z.string().min(1, "Category ID is required"),
+    image: z.string().url("Invalid image URL").optional().or(z.literal("")),
+    isAvailable: z.boolean().optional().default(true), // Eita add koro
   }),
 });
 
