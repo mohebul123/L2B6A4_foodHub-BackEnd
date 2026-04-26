@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import router from "./routes";
 import { PaymentController } from "./modules/payment/payment.controller";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -26,5 +27,7 @@ app.use("/api/v1", router);
 app.get("/", (req: Request, res: Response) => {
   res.send("FoodHub Server is Running! 🚀");
 });
+
+app.use(globalErrorHandler);
 
 export default app;
