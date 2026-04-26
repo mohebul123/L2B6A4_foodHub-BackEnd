@@ -88,6 +88,8 @@ model Order {
 
   totalAmount     Float
   status          OrderStatus @default(PLACED)
+  paymentStatus   String      @default("UNPAID") // UNPAID, PAID
+  transactionId   String?
   deliveryAddress String
   customerId      String
   customer        User        @relation(fields: [customerId], references: [id])

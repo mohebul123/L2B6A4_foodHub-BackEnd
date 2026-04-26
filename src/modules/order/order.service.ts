@@ -1,3 +1,5 @@
+import config from "../../config";
+import { srtripe } from "../../config/stripe.config";
 import { Order } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
@@ -9,66 +11,71 @@ type CreateOrderPayload = {
   }[];
 };
 
-const createOrder = async (userId: string, payload: CreateOrderPayload) => {
-  const { deliveryAddress, orderItems } = payload;
+export const createOrder = async (userId: string, payload: any) => {
+  const { deliveryAddress, orderItems, paymentMethod } = payload;
 
-  if (!orderItems || orderItems.length === 0) {
+  if (!orderItems || orderItems.length === 0)
     throw new Error("Items Not Found");
-  }
 
-  const mealIds = orderItems.map((m) => m.mealId);
-
-  const mealsDetailsFromDb = await prisma.meal.findMany({
-    where: {
-      id: { in: mealIds },
-    },
+  // 1. Meal details fetch kora amount calculate korar jonno
+  const mealIds = orderItems.map((m: any) => m.mealId);
+  const mealsFromDb = await prisma.meal.findMany({
+    where: { id: { in: mealIds } },
   });
-
-  if (mealsDetailsFromDb.length !== mealIds.length) {
-    throw new Error("Some meals were not found in the database");
-  }
-
-  const providerIds = [...new Set(mealsDetailsFromDb.map((m) => m.providerId))];
-
-  if (providerIds.length > 1) {
-    throw new Error(
-      "You can only order from one restaurant/provider at a time.",
-    );
-  }
 
   let totalPrice = 0;
+  const lineItems: any[] = [];
 
-  const orderItemsData = orderItems.map((item) => {
-    const meal = mealsDetailsFromDb.find((m) => m.id === item.mealId);
+  const orderItemsData = orderItems.map((item: any) => {
+    const meal = mealsFromDb.find((m) => m.id === item.mealId);
+    if (!meal) throw new Error(`Meal not found`);
 
-    if (!meal) {
-      throw new Error(`Meal with ID ${item.mealId} not found`);
+    totalPrice += meal.price * item.quantity;
+
+    // Stripe format (Online payment holei lagbe)
+    if (paymentMethod === "ONLINE") {
+      lineItems.push({
+        price_data: {
+          currency: "bdt",
+          product_data: { name: meal.title },
+          unit_amount: Math.round(meal.price * 100), // Taka to Cent
+        },
+        quantity: item.quantity,
+      });
     }
-
-    const itemTotal = meal.price * item.quantity;
-    totalPrice += itemTotal;
-
-    return {
-      mealId: meal.id,
-      quantity: item.quantity,
-    };
+    return { mealId: meal.id, quantity: item.quantity };
   });
 
+  // 2. Database-e Order create koro (Status: PLACED)
   const order = await prisma.order.create({
     data: {
       customerId: userId,
       deliveryAddress,
       totalAmount: totalPrice,
-      orderItems: {
-        create: orderItemsData,
-      },
-    },
-    include: {
-      orderItems: true,
+      status: "PLACED",
+      paymentStatus: "UNPAID",
+      orderItems: { create: orderItemsData },
     },
   });
 
-  return order;
+  let paymentUrl = null;
+
+  // 3. Online payment hole Stripe Session create koro
+  if (paymentMethod === "ONLINE") {
+    const session = await srtripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      success_url: `${config.client_url}/payment-success`,
+      cancel_url: `${config.client_url}/cart`,
+      metadata: {
+        orderId: order.id, // Webhook eita diyei database update korbe
+      },
+      line_items: lineItems,
+    });
+    paymentUrl = session.url;
+  }
+
+  return { ...order, paymentUrl };
 };
 
 const getOrders = async (customerId: string) => {

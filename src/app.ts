@@ -5,22 +5,15 @@ import { authRouter } from "./modules/auth/auth.route";
 import routes from "./routes";
 import globalErrorHandler from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
+import { PaymentRoutes } from "./modules/payment/payment.route";
 
 const PORT = 5000;
 
 const app = express();
 
-app.use(express.json());
-
 //web Hook
-app.post(
-  "/webhook",
-  express.raw({ type: "application/json" }),
-  async (req: Request, res: Response) => {
-    console.log("Webhook recieved ", req.body);
-    res.status(200).json({ recived: true });
-  },
-);
+app.post("/webhook", express.raw({ type: "application/json" }), PaymentRoutes);
+app.use(express.json());
 app.use(cors());
 
 //applications Rotes
