@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { providerController } from "./provider.controller";
-import auth, { UserRole } from "../../middleware/auth";
+// import auth, { UserRole } from "../../middleware/auth";
 import validateRequest from "../../middleware/validateRequest";
 import {
   createMealSchema,
@@ -9,6 +9,7 @@ import {
   updateMealSchema,
   updateProviderProfileSchema,
 } from "../../schemas/providerProfile.schemas";
+import auth, { UserRole } from "../../middleware/auth";
 
 const router = Router();
 router.post(
@@ -29,6 +30,7 @@ router.patch(
   providerController.updateOwnProviderProfile,
 );
 router.get("/", providerController.getAllProvider);
+router.get("/my-meals", auth(UserRole.provider), providerController.getMyMeals);
 router.get("/:providerId", providerController.getProviderById);
 router.post(
   "/meals",
@@ -38,7 +40,7 @@ router.post(
 );
 router.put(
   "/meals/:mealId",
-  validateRequest(updateMealSchema),
+  // validateRequest(updateMealSchema),
   auth(UserRole.provider),
   providerController.updateMealbyId,
 );
@@ -47,5 +49,7 @@ router.patch(
   auth(UserRole.provider),
   providerController.updateOrderStatus,
 );
+
+router.get("/my-meals", auth(UserRole.provider), providerController.getMyMeals);
 
 export const providerRouter = router;

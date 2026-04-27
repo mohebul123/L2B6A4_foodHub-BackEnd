@@ -7,14 +7,21 @@ import {
 import { prisma } from "../../lib/prisma";
 
 const createMeal = async (payload: Meal, userId: string) => {
+  // 1. Prothome check koro ei User-er kono ProviderProfile ache kina
   const provider = await prisma.providerProfile.findUnique({
     where: {
-      userId,
+      userId: userId,
     },
   });
+
+  // 2. Jodi Profile na thake, tobe error throw koro
   if (!provider) {
-    throw new Error("ProviderProfile Not Found in  DB");
+    throw new Error(
+      "Provider profile not found! You must create a profile before adding meals.",
+    );
   }
+
+  // 3. Category exist kore kina sheta check koro
   const isCategoryExist = await prisma.category.findUnique({
     where: {
       id: payload.categoryId,
@@ -22,11 +29,17 @@ const createMeal = async (payload: Meal, userId: string) => {
   });
 
   if (!isCategoryExist) {
-    throw new Error("Category Not Found in  DB");
+    throw new Error("Category not found in database.");
   }
+
+  // 4. Ekhon Meal create koro 'provider.id' use kore (userId noy)
   const result = await prisma.meal.create({
-    data: { ...payload, providerId: provider.id },
+    data: {
+      ...payload,
+      providerId: provider.id, // Profile theke pawa ID ta eikhane jabe
+    },
   });
+
   return result;
 };
 
@@ -157,10 +170,9 @@ const updateOrderStatus = async (
   });
 
   if (!providerProfile) {
-    throw new Error("Provider profile not found for this user!");
+    throw new Error("Provider profile not found!");
   }
 
-  // 2. Ekhon order details fetch koro
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { orderItems: { include: { meal: true } } },
@@ -175,9 +187,42 @@ const updateOrderStatus = async (
   if (!isOwner) {
     throw new Error("You are not authorized to update this order!");
   }
+
+  let updateData: any = { status };
+
+  if (status === "DELIVERED" && !order.transactionId) {
+    updateData.paymentStatus = "PAID";
+  }
+
   const result = await prisma.order.update({
     where: { id: orderId },
-    data: { status },
+    data: updateData,
+  });
+
+  return result;
+};
+
+const getMyMeals = async (userId: string) => {
+  const profile = await prisma.providerProfile.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+
+  if (!profile) {
+    throw new Error("Provider profile not found for this user!");
+  }
+
+  const result = await prisma.meal.findMany({
+    where: {
+      providerId: profile.id,
+    },
+    include: {
+      category: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return result;
@@ -191,4 +236,5 @@ export const providerService = {
   getProviderById,
   updateMealbyId,
   updateOrderStatus,
+  getMyMeals,
 };

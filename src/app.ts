@@ -1,8 +1,10 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import router from "./routes";
+import cookieParser from "cookie-parser";
 import { PaymentController } from "./modules/payment/payment.controller";
 import globalErrorHandler from "./middleware/globalErrorHandler";
+import { notFound } from "./middleware/notFound";
+import routes from "./routes";
 
 const app: Application = express();
 
@@ -21,13 +23,14 @@ app.post(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use("/api/v1", router);
+app.use(cookieParser());
+app.use("/api/v1", routes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("FoodHub Server is Running! 🚀");
 });
 
 app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;

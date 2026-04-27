@@ -145,6 +145,33 @@ const updateOrderStatus = async (req: Request, res: Response) => {
     res.status(403).json({ success: false, message: error.message });
   }
 };
+
+const getMyMeals = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access!",
+      });
+    }
+
+    const result = await providerService.getMyMeals(user.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Provider meals retrieved successfully!",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong while fetching meals",
+    });
+  }
+};
+
 export const providerController = {
   createMeal,
   createProviderProfile,
@@ -154,4 +181,5 @@ export const providerController = {
   getProviderById,
   updateMealbyId,
   updateOrderStatus,
+  getMyMeals,
 };

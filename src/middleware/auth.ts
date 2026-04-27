@@ -34,13 +34,12 @@ const auth = (...roles: UserRole[]) => {
           "Your Acount is currently INACTIVE please try agian later...!!",
         );
       }
-
       if (roles.length && !roles.includes(decoded.role)) {
         throw new Error("Unauthorized!!!");
       }
 
       req.user = decoded;
-      console.log(req.user);
+      // console.log(req.user);
       next();
     } catch (error: any) {
       next(error);
